@@ -55,9 +55,6 @@ func (c *client) GetBlock(idOrNum int64, Detail bool) (models.Block, error) {
 		return models.Block{}, fmt.Errorf("error making request to TRONGrid: %v", err)
 	}
 
-	// Convert responseBody (type []byte) to string and print
-	fmt.Println("JSON Response:", string(responseBody))
-
 	var response models.Block
 	err = json.Unmarshal(responseBody, &response)
 	if err != nil {
@@ -65,4 +62,30 @@ func (c *client) GetBlock(idOrNum int64, Detail bool) (models.Block, error) {
 	}
 
 	return response, nil
+}
+
+func (c *client) GetBlockByLimitNext(startNum int64, endNum int64) ([]models.Block, error) {
+	// Construct the request body
+	requestBody := map[string]interface{}{
+		"startNum": startNum,
+		"endNum":   endNum,
+	}
+
+	responseBody, err := utils.MakeRequest(c.baseURL, "/wallet/getblockbylimitnext", requestBody)
+
+	if err != nil {
+		return nil, fmt.Errorf("error making request to TRONGrid: %v", err)
+	}
+
+	type Block struct {
+		Blocks []models.Block `json:"block"`
+	}
+
+	var response Block
+	err = json.Unmarshal(responseBody, &response)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing response from TRONGrid: %v", err)
+	}
+
+	return response.Blocks, nil
 }

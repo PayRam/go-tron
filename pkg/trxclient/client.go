@@ -8,4 +8,5 @@ import (
 type Client interface {
 	GetNowBlock() (models.Block, error)
 	GetBlock(idOrNum int64, Detail bool) (models.Block, error)
+	GetBlockByLimitNext(startNum int64, endNum int64) ([]models.Block, error)
 }

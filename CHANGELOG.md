@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2024-04-02
+
+### Added
+- api GetBlockByLimitNext
+
 ## [0.1.3] - 2024-04-02
 
 ### Changes
