@@ -11,9 +11,7 @@ import (
 
 func MakeRequest(baseURL string, endpoint string, params interface{}) ([]byte, error) {
 	fullURL := fmt.Sprintf("%s%s", baseURL, endpoint)
-	payload := strings.NewReader("{\"id_or_num\":\"42835739\",\"detail\":true}")
-	fmt.Printf("payload: %s\n", payload)
-	var paramsStr *strings.Reader
+	var paramsStr io.Reader
 	var err error
 	if params != nil {
 		// Marshal the map to a JSON string
@@ -24,7 +22,6 @@ func MakeRequest(baseURL string, endpoint string, params interface{}) ([]byte, e
 
 		// Create a *strings.Reader from the JSON string
 		paramsStr = strings.NewReader(string(jsonBytes))
-		fmt.Printf("paramsStr: %s\n", paramsStr)
 	}
 	//payload := strings.NewReader("{\"id_or_num\":\"1000000\",\"detail\":true}")
 
