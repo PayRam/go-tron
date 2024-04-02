@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5] - 2024-04-02
+
+### Added
+- added util function to convert hex to base58 address
+- added functionality to decode transfer data
+
 ## [0.1.4] - 2024-04-02
 
 ### Added
