@@ -5,30 +5,28 @@ import (
 	"fmt"
 	"github.com/PayRam/go-tron/internal/utils"
 	"github.com/PayRam/go-tron/pkg/models"
+	"github.com/PayRam/go-tron/pkg/trxclient"
 	"strconv"
 )
 
-// Transaction represents a TRON transaction.
-// Add fields according to TRONGrid's transaction structure.
-type Transaction struct {
-	TransactionID string `json:"transaction_id"`
-}
-
-// RPCClient implements TRONGridClient interface for TRONGrid API.
-type RPCClient struct {
+// client implements TRONGridClient interface for TRONGrid API.
+type client struct {
 	baseURL string
 	apiKey  string
 }
 
-// NewRPCClient creates a new RPC trxclient.
-func NewRPCClient(baseURL, apiKey string) *RPCClient {
-	return &RPCClient{
+// Ensure RPCClient implements the trxclient.Client interface.
+var _ trxclient.Client = (*client)(nil)
+
+// NewTRXClient creates a new RPC trxclient.
+func NewTRXClient(baseURL, apiKey string) trxclient.Client {
+	return &client{
 		baseURL: baseURL,
 		apiKey:  apiKey,
 	}
 }
 
-func (c *RPCClient) GetNowBlock() (models.Block, error) {
+func (c *client) GetNowBlock() (models.Block, error) {
 	responseBody, err := utils.MakeRequest(c.baseURL, "/wallet/getnowblock", nil)
 
 	if err != nil {
@@ -44,7 +42,7 @@ func (c *RPCClient) GetNowBlock() (models.Block, error) {
 	return response, nil
 }
 
-func (c *RPCClient) GetBlock(idOrNum int64, Detail bool) (models.Block, error) {
+func (c *client) GetBlock(idOrNum int64, Detail bool) (models.Block, error) {
 	// Construct the request body
 	requestBody := map[string]interface{}{
 		"id_or_num": strconv.Itoa(int(idOrNum)),

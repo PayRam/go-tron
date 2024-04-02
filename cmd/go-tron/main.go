@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/PayRam/go-tron/pkg/trxclient"
+	"github.com/PayRam/go-tron/pkg/trxclient/trxinit"
 	"log"
 )
 
@@ -10,9 +10,9 @@ func main() {
 	// This is the entry point of the program
 	// This is the first
 
-	tronCleint := trxclient.NewClient("https://api.trongrid.io", "api-key")
+	trxClient := trxinit.NewClient("https://api.trongrid.io", "api-key")
 
-	block, _ := tronCleint.GetBlock(32880248, false)
+	block, _ := trxClient.GetBlock(32880248, false)
 
 	log.Println(block)
 }
