@@ -3,6 +3,7 @@ package trxutils
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"github.com/PayRam/go-tron/pkg/models"
 	"github.com/btcsuite/btcutil/base58"
 	"log"
@@ -38,7 +39,10 @@ func HexToBase58(hexAddr string) string {
 	return ToBase58(decoded)
 }
 
-func DecodeTransferData(data string) models.TransferData {
+func DecodeTransferData(data string) (*models.TransferData, error) {
+	if len(data) < 138 { // 8 chars for MethodID + 64 chars for ToAddress + 64 chars for Value = 136 chars
+		return nil, errors.New("data string not long enough to contain method ID, to address, and value")
+	}
 	methodID := data[:8]
 	toHex := data[8:72]   // Next 32 bytes after methodID
 	valueHex := data[72:] // Next 32 bytes after toHex
@@ -49,12 +53,9 @@ func DecodeTransferData(data string) models.TransferData {
 	valueBigInt := new(big.Int)
 	valueBigInt.SetString(valueHex, 16)
 
-	// Convert to Ethereum address format
-	toAddress := HexToBase58(toAddressHex)
-
-	return models.TransferData{
+	return &models.TransferData{
 		MethodID:  methodID,
-		ToAddress: toAddress,
+		ToAddress: toAddressHex,
 		Value:     *valueBigInt,
-	}
+	}, nil
 }

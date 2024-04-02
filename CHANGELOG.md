@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.6] - 2024-04-02
+
+### Added
+- small fix
+
 ## [0.1.5] - 2024-04-02
 
 ### Added
