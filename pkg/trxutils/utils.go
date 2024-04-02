@@ -6,8 +6,8 @@ import (
 	"errors"
 	"github.com/PayRam/go-tron/pkg/models"
 	"github.com/btcsuite/btcutil/base58"
-	"log"
 	"math/big"
+	"strings"
 )
 
 // ToBase58 encodes input bytes using ToBase58 encoding.
@@ -29,16 +29,6 @@ func doubleSHA256(data []byte) []byte {
 	return secondHash[:]
 }
 
-// HexToBase58 converts a hexadecimal address to a Base58 address.
-func HexToBase58(hexAddr string) string {
-	decoded, err := hex.DecodeString(hexAddr)
-	if err != nil {
-		log.Fatal("Failed to decode hex:", err)
-	}
-	// Encode the payload with Base58Check.
-	return ToBase58(decoded)
-}
-
 func DecodeTransferData(data string) (*models.TransferData, error) {
 	if len(data) < 136 { // 8 chars for MethodID + 64 chars for ToAddress + 64 chars for Value = 136 chars
 		return nil, errors.New("data string not long enough to contain method ID, to address, and value")
@@ -47,7 +37,7 @@ func DecodeTransferData(data string) (*models.TransferData, error) {
 	toHex := data[8:72]   // Next 32 bytes after methodID
 	valueHex := data[72:] // Next 32 bytes after toHex
 
-	toAddressHex := toHex[len(toHex)-42:]
+	toAddressHex := toHex[len(toHex)-40:]
 
 	// Convert the hex value to a big integer
 	valueBigInt := new(big.Int)
@@ -58,4 +48,40 @@ func DecodeTransferData(data string) (*models.TransferData, error) {
 		ToAddress: toAddressHex,
 		Value:     *valueBigInt,
 	}, nil
+}
+
+func HexToAddress(hexAddr string) (string, error) {
+	// Add "41" prefix to the hex address (TRON addresses start with "41" which is "T" in Base58)
+	var prefixedHexAddr string
+	if strings.HasPrefix(hexAddr, "41") {
+		if len(hexAddr) == 40 { // Excludes "41" prefix
+			prefixedHexAddr = "41" + hexAddr
+		} else if len(hexAddr) != 42 { // Includes "41" prefix
+			return "", errors.New("invalid address length with '41' prefix")
+		}
+		prefixedHexAddr = hexAddr
+	} else {
+		if len(hexAddr) != 40 { // Excludes "41" prefix
+			return "", errors.New("invalid address length without '41' prefix")
+		}
+		prefixedHexAddr = "41" + hexAddr
+	}
+
+	// Decode the hex string to bytes
+	addrBytes, err := hex.DecodeString(prefixedHexAddr)
+	if err != nil {
+		return "", err
+	}
+
+	// Double SHA-256 hash
+	hash := sha256.Sum256(addrBytes)
+	hash = sha256.Sum256(hash[:])
+
+	// Append first 4 bytes of hash as checksum
+	checksummedBytes := append(addrBytes, hash[:4]...)
+
+	// Convert to Base58
+	base58Addr := base58.Encode(checksummedBytes)
+
+	return base58Addr, nil
 }

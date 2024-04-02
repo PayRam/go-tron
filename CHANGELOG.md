@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.9] - 2024-04-02
+
+### Changes
+- hex to tron address generation logic
+
 ## [0.1.8] - 2024-04-02
 
 ### Added
