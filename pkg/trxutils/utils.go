@@ -40,7 +40,7 @@ func HexToBase58(hexAddr string) string {
 }
 
 func DecodeTransferData(data string) (*models.TransferData, error) {
-	if len(data) < 138 { // 8 chars for MethodID + 64 chars for ToAddress + 64 chars for Value = 136 chars
+	if len(data) < 136 { // 8 chars for MethodID + 64 chars for ToAddress + 64 chars for Value = 136 chars
 		return nil, errors.New("data string not long enough to contain method ID, to address, and value")
 	}
 	methodID := data[:8]
