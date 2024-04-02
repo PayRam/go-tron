@@ -20,7 +20,7 @@ type RPCClient struct {
 	apiKey  string
 }
 
-// NewRPCClient creates a new RPC client.
+// NewRPCClient creates a new RPC trxclient.
 func NewRPCClient(baseURL, apiKey string) *RPCClient {
 	return &RPCClient{
 		baseURL: baseURL,
