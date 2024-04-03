@@ -17,7 +17,8 @@ func MakeRequest(baseURL string, endpoint string, params interface{}) ([]byte, e
 		// Marshal the map to a JSON string
 		jsonBytes, err := json.Marshal(params)
 		if err != nil {
-			log.Fatalf("Error marshaling request body: %v", err)
+			log.Println("Error marshaling request body: %v", err)
+			return nil, err
 		}
 
 		// Create a *strings.Reader from the JSON string
@@ -25,16 +26,27 @@ func MakeRequest(baseURL string, endpoint string, params interface{}) ([]byte, e
 	}
 	//payload := strings.NewReader("{\"id_or_num\":\"1000000\",\"detail\":true}")
 
-	req, _ := http.NewRequest("POST", fullURL, paramsStr)
+	req, httpReqError := http.NewRequest("POST", fullURL, paramsStr)
+
+	if httpReqError != nil {
+		log.Println("Error creating http request: ", httpReqError)
+		return nil, httpReqError
+	}
 
 	req.Header.Add("accept", "application/json")
 	req.Header.Add("content-type", "application/json")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, clientError := http.DefaultClient.Do(req)
+
+	if clientError != nil {
+		log.Println("Error making request: ", clientError)
+		return nil, clientError
+	}
 
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
+		log.Println("Error reading response body: ", err)
 		return nil, err
 	}
 

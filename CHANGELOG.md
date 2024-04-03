@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.10] - 2024-04-03
+
+### Changes
+- error handling
+
 ## [0.1.9] - 2024-04-02
 
 ### Changes
