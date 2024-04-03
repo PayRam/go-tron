@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2024-04-03
+
+### Changes
+- trongrid api key will be passed in the header of all the apis
+
 ## [0.1.10] - 2024-04-03
 
 ### Changes

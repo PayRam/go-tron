@@ -27,7 +27,7 @@ func NewTRXClient(baseURL, apiKey string) trxclient.Client {
 }
 
 func (c *client) GetNowBlock() (models.Block, error) {
-	responseBody, err := utils.MakeRequest(c.baseURL, "/wallet/getnowblock", nil)
+	responseBody, err := utils.MakeRequest(c.baseURL, c.apiKey, "/wallet/getnowblock", nil)
 
 	if err != nil {
 		return models.Block{}, err
@@ -49,7 +49,7 @@ func (c *client) GetBlock(idOrNum int64, Detail bool) (models.Block, error) {
 		"detail":    Detail,
 	}
 
-	responseBody, err := utils.MakeRequest(c.baseURL, "/wallet/getblock", requestBody)
+	responseBody, err := utils.MakeRequest(c.baseURL, c.apiKey, "/wallet/getblock", requestBody)
 
 	if err != nil {
 		return models.Block{}, fmt.Errorf("error making request to TRONGrid: %v", err)
@@ -71,7 +71,7 @@ func (c *client) GetBlockByLimitNext(startNum int64, endNum int64) ([]models.Blo
 		"endNum":   endNum,
 	}
 
-	responseBody, err := utils.MakeRequest(c.baseURL, "/wallet/getblockbylimitnext", requestBody)
+	responseBody, err := utils.MakeRequest(c.baseURL, c.apiKey, "/wallet/getblockbylimitnext", requestBody)
 
 	if err != nil {
 		return nil, fmt.Errorf("error making request to TRONGrid: %v", err)

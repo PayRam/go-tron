@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func MakeRequest(baseURL string, endpoint string, params interface{}) ([]byte, error) {
+func MakeRequest(baseURL string, apiKey string, endpoint string, params interface{}) ([]byte, error) {
 	fullURL := fmt.Sprintf("%s%s", baseURL, endpoint)
 	var paramsStr io.Reader
 	var err error
@@ -35,6 +35,9 @@ func MakeRequest(baseURL string, endpoint string, params interface{}) ([]byte, e
 
 	req.Header.Add("accept", "application/json")
 	req.Header.Add("content-type", "application/json")
+	if apiKey != "" {
+		req.Header.Add("TRON-PRO-API-KEY", apiKey) // Adding the TRON-PRO-API-KEY header
+	}
 
 	res, clientError := http.DefaultClient.Do(req)
 
